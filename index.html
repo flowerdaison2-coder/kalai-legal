@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kalai Legal Suite v10 — All-India Auto Petition Engine</title>
+  <title>Kalai Legal Suite v12 — Real-Time Friend Voice AI</title>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
     body {
@@ -60,8 +60,12 @@
       background: #16a34a; color: #fff; box-shadow: 0 0 12px #22c55e;
       animation: pulse 1.1s infinite;
     }
+    .mic-signal.speaking {
+      background: #d97706; color: #fff; box-shadow: 0 0 12px #f59e0b;
+      animation: pulse 0.9s infinite;
+    }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; }
-    .mic-signal.active .dot { background: #fef08a; }
+    .mic-signal.active .dot, .mic-signal.speaking .dot { background: #fef08a; }
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
@@ -129,12 +133,17 @@
     .doc-bar select { width: auto; min-width: 145px; margin-bottom: 0; }
     .hint { font-size: 11px; color: #475569; margin-top: 5px; }
 
+    .api-drawer {
+      display: none; background: #fffbeb; border-bottom: 2px solid #f59e0b;
+      padding: 8px 14px;
+    }
+
     @media (max-width: 900px) {
       .workspace { grid-template-columns: 1fr; height: auto; }
       .right-col { grid-template-rows: auto auto; }
     }
     @media print {
-      #lockScreen, header, .status-bar, .doc-bar, .right-col, .btn-row, .hint, h2 { display: none !important; }
+      #lockScreen, header, .status-bar, .api-drawer, .doc-bar, .right-col, .btn-row, .hint, h2 { display: none !important; }
       .workspace { display: block; height: auto; padding: 0; }
       .panel { border: none; box-shadow: none; padding: 0; background: #fff; }
       textarea { border: none; background: #fff; color: #000; font-size: 13pt; }
@@ -144,7 +153,7 @@
 <body>
 
   <div id="lockScreen">
-    <h2 style="color:#fde68a;margin:0;font-size:20px;">Kalai Legal Suite v10 — All-India Auto Petition</h2>
+    <h2 style="color:#fde68a;margin:0;font-size:20px;">Kalai Legal Suite v12 — Friend Voice AI</h2>
     <p style="font-size:13px;color:#e0e7ff;margin:6px 0 0;">Enter PIN (Default: 1234)</p>
     <input type="password" id="pinInput" maxlength="8" placeholder="PIN" />
     <div style="display:flex;gap:8px;">
@@ -155,19 +164,29 @@
   </div>
 
   <header>
-    <h1>Kalai Legal Suite v10 — Single Document -> All-India Auto Petition</h1>
+    <h1>Kalai Legal Suite v12 — Real-Time Friend Voice AI</h1>
     <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
-      <span id="micSignal" class="mic-signal"><span class="dot"></span><span id="micSignalText">MIC OFF</span></span>
-      <button class="btn-funky-green" onclick="startVoiceCommander('ta-IN')">Voice AI (TA)</button>
-      <button class="btn-funky-pink" onclick="startVoiceCommander('en-IN')">Voice AI (EN)</button>
-      <button class="btn-funky-red" onclick="stopVoiceCommander()">Stop Voice</button>
+      <span id="micSignal" class="mic-signal"><span class="dot"></span><span id="micSignalText">VOICE OFF</span></span>
+      <button class="btn-funky-green" onclick="startFriendLiveMode('ta-IN')">Live Friend Voice (TA)</button>
+      <button class="btn-funky-pink" onclick="startFriendLiveMode('en-IN')">Live Friend Voice (EN)</button>
+      <button class="btn-funky-red" onclick="stopFriendLiveMode()">Stop Voice</button>
+      <button class="file-btn" onclick="toggleApiDrawer()">Gemini API</button>
       <button class="btn-funky-red" onclick="lockApp()">Lock</button>
     </div>
   </header>
 
   <div class="status-bar">
     <span id="pageStatusPill" class="status-pill">Page: 1 / 80</span>
-    <span id="activityStatusPill" class="status-pill activity">Status: Paste/Upload Document or Speak</span>
+    <span id="activityStatusPill" class="status-pill activity">Status: Tap Live Friend Voice to Chat</span>
+  </div>
+
+  <div id="apiDrawer" class="api-drawer">
+    <div style="font-size:12px;font-weight:700;margin-bottom:4px;color:#78350f;">Gemini API Key (Saved locally for smart real-time friend replies)</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <input type="password" id="geminiApiKeyInput" placeholder="Paste Gemini API Key..." style="flex:1;min-width:180px;margin-bottom:0;" />
+      <button class="btn-funky-green" onclick="saveApiKey()">Save Key</button>
+      <button class="btn-funky-red" onclick="clearApiKey()">Clear</button>
+    </div>
   </div>
 
   <div class="workspace">
@@ -195,10 +214,10 @@
         onclick="updateCurrentPageFromCursor()"
         onkeyup="updateCurrentPageFromCursor()"
         onscroll="updateCurrentPageFromCursor()"
-        placeholder="Paste your case document/matter here OR load a document file, then click 'Auto-Create Petition' or say 'petition create pannu' / 'itha sonna enna drawback varum'..."
+        placeholder="Paste/load document for auto court & petition generation, or speak naturally — Kalai replies like a real-time friend..."
       ></textarea>
 
-      <div class="hint" id="voiceHint">Supports All-India Courts & Petition Types from single document input. Always verify statutory sections, court rules & filing requirements officially.</div>
+      <div class="hint" id="voiceHint">Live Friend Mode: Speaks back in Tamil after every turn and automatically listens again. Always verify statutory rules & legal steps officially.</div>
 
       <div class="btn-row">
         <button class="btn-funky-amber" onclick="autoGenerateFromDocument()">Auto-Create Petition</button>
@@ -219,9 +238,9 @@
 
       <!-- SCREEN 3 -->
       <div class="panel">
-        <h2>3. Voice AI Risk & Strategy Advisor</h2>
-        <input type="text" id="secQuestion" placeholder="Last voice command / risk query..." />
-        <textarea id="qaBox" placeholder="Drawback & adverse-fact analysis (spoken in Tamil)..."></textarea>
+        <h2>3. Kalai Friend — Live Voice Chat & Analysis</h2>
+        <input type="text" id="secQuestion" placeholder="What you just said..." />
+        <textarea id="qaBox" placeholder="Real-time friend conversation & analysis..."></textarea>
       </div>
     </div>
   </div>
@@ -229,35 +248,179 @@
   <script>
     const MAX_PAGES = 80;
     const WORDS_PER_PAGE = 300;
-    let commanderRec = null;
+    let recInstance = null;
+    let liveSessionActive = false;
+    let isAssistantSpeaking = false;
+    let sessionLang = 'ta-IN';
+    let restartTimer = null;
+    let chatHistory = [];
 
     const draftArea = document.getElementById('draftArea');
     const judgementBox = document.getElementById('judgementBox');
     const qaBox = document.getElementById('qaBox');
 
-    function speakTamil(text) {
-      if (!('speechSynthesis' in window) || !text) return;
-      try {
-        window.speechSynthesis.cancel();
-        const clean = text.replace(/[*#_`>-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 950);
-        const u = new SpeechSynthesisUtterance(clean);
-        u.lang = 'ta-IN';
-        const voices = window.speechSynthesis.getVoices();
-        const ta = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ta'));
-        if (ta) u.voice = ta;
-        window.speechSynthesis.speak(u);
-      } catch {}
-    }
-
     function setActivity(msg) {
       document.getElementById('activityStatusPill').innerText = 'Status: ' + msg;
     }
 
-    function setMicSignal(on, label) {
-      const b = document.getElementById('micSignal');
-      const t = document.getElementById('micSignalText');
-      if (on) { b.classList.add('active'); t.innerText = label || 'VOICE AI ON'; }
-      else { b.classList.remove('active'); t.innerText = 'MIC OFF'; }
+    function setSignalState(mode, label) {
+      const badge = document.getElementById('micSignal');
+      const txt = document.getElementById('micSignalText');
+      badge.classList.remove('active', 'speaking');
+      if (mode === 'listening') {
+        badge.classList.add('active');
+        txt.innerText = label || 'LISTENING';
+      } else if (mode === 'speaking') {
+        badge.classList.add('speaking');
+        txt.innerText = label || 'KALAI SPEAKING';
+      } else {
+        txt.innerText = label || 'VOICE OFF';
+      }
+    }
+
+    function speakFriendReply(text, onDone) {
+      if (!('speechSynthesis' in window) || !text) {
+        if (onDone) onDone();
+        return;
+      }
+      try {
+        if (recInstance) { try { recInstance.stop(); } catch {} }
+        window.speechSynthesis.cancel();
+        isAssistantSpeaking = true;
+        setSignalState('speaking', 'KALAI SPEAKING');
+        setActivity('Kalai Friend Replying...');
+
+        const clean = text.replace(/[*#_`>-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 900);
+        const utter = new SpeechSynthesisUtterance(clean);
+        utter.lang = 'ta-IN';
+        utter.rate = 1.05;
+        utter.pitch = 1.03;
+
+        const voices = window.speechSynthesis.getVoices();
+        const taVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ta'));
+        if (taVoice) utter.voice = taVoice;
+
+        utter.onend = () => {
+          isAssistantSpeaking = false;
+          if (liveSessionActive) {
+            scheduleNextListen(180);
+          } else {
+            setSignalState('off', 'VOICE OFF');
+            setActivity('Ready');
+          }
+          if (onDone) onDone();
+        };
+
+        utter.onerror = () => {
+          isAssistantSpeaking = false;
+          if (liveSessionActive) scheduleNextListen(250);
+          else setSignalState('off', 'VOICE OFF');
+          if (onDone) onDone();
+        };
+
+        window.speechSynthesis.speak(utter);
+      } catch {
+        isAssistantSpeaking = false;
+        if (liveSessionActive) scheduleNextListen(250);
+        if (onDone) onDone();
+      }
+    }
+
+    function scheduleNextListen(delayMs) {
+      clearTimeout(restartTimer);
+      if (!liveSessionActive || isAssistantSpeaking) return;
+      restartTimer = setTimeout(() => {
+        if (liveSessionActive && !isAssistantSpeaking) {
+          listenOnce();
+        }
+      }, delayMs);
+    }
+
+    function listenOnce() {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        setActivity('Browser Speech API Unavailable — Use HTTPS or Gboard Mic');
+        liveSessionActive = false;
+        setSignalState('off', 'VOICE OFF');
+        return;
+      }
+      if (recInstance) { try { recInstance.stop(); } catch {} }
+      recInstance = new SR();
+      recInstance.lang = sessionLang;
+      recInstance.continuous = false;
+      recInstance.interimResults = false;
+
+      recInstance.onstart = () => {
+        if (!isAssistantSpeaking) {
+          setSignalState('listening', 'LISTENING');
+          setActivity('Pesunga nanba, naan kekkuren...');
+        }
+      };
+
+      recInstance.onresult = (e) => {
+        const spoken = e.results[0][0].transcript.trim();
+        if (!spoken) return;
+        document.getElementById('secQuestion').value = spoken;
+        handleUserUtterance(spoken);
+      };
+
+      recInstance.onerror = (e) => {
+        if (e.error === 'not-allowed') {
+          liveSessionActive = false;
+          setSignalState('off', 'MIC BLOCKED');
+          setActivity('Mic Not Allowed — Allow Mic in Browser Settings');
+          return;
+        }
+        if (liveSessionActive && !isAssistantSpeaking) {
+          scheduleNextListen(300);
+        }
+      };
+
+      recInstance.onend = () => {
+        if (liveSessionActive && !isAssistantSpeaking) {
+          scheduleNextListen(220);
+        } else if (!liveSessionActive && !isAssistantSpeaking) {
+          setSignalState('off', 'VOICE OFF');
+        }
+      };
+
+      try {
+        recInstance.start();
+      } catch {}
+    }
+
+    function startFriendLiveMode(lang) {
+      sessionLang = lang || 'ta-IN';
+      liveSessionActive = true;
+      const greet = 'வணக்கம் நண்பா! சொல்லுங்க, இப்போ என்ன பேசலாம்? உங்க கூட ரியல் டைம்ல பேச நான் ரெடி!';
+      qaBox.value = 'கலை: ' + greet + (qaBox.value ? '\n\n' + qaBox.value : '');
+      speakFriendReply(greet);
+    }
+
+    function stopFriendLiveMode() {
+      liveSessionActive = false;
+      isAssistantSpeaking = false;
+      clearTimeout(restartTimer);
+      if (recInstance) { try { recInstance.stop(); } catch {} }
+      if ('speechSynthesis' in window) { try { window.speechSynthesis.cancel(); } catch {} }
+      setSignalState('off', 'VOICE OFF');
+      setActivity('Live Friend Voice Stopped');
+    }
+
+    function toggleApiDrawer() {
+      const d = document.getElementById('apiDrawer');
+      d.style.display = d.style.display === 'block' ? 'none' : 'block';
+      document.getElementById('geminiApiKeyInput').value = localStorage.getItem('kalai_gemini_key') || '';
+    }
+    function saveApiKey() {
+      localStorage.setItem('kalai_gemini_key', document.getElementById('geminiApiKeyInput').value.trim());
+      setActivity('Gemini API Key Saved');
+      speakFriendReply('சூப்பர் நண்பா, ஜெமினி ஏபிஐ கீ சேவ் ஆகிடுச்சு. இப்போ இன்னும் ஸ்மார்ட்டா பேசலாம்!');
+    }
+    function clearApiKey() {
+      localStorage.removeItem('kalai_gemini_key');
+      document.getElementById('geminiApiKeyInput').value = '';
+      setActivity('Gemini API Key Cleared');
     }
 
     function getStoredPin() { return localStorage.getItem('kalai_pin') || '1234'; }
@@ -265,14 +428,13 @@
       if (document.getElementById('pinInput').value.trim() === getStoredPin()) {
         document.getElementById('lockScreen').style.display = 'none';
         document.getElementById('pinInput').value = '';
-        setActivity('Assistant: Enna panna poringa?');
-        speakTamil('வணக்கம்! என்ன பண்ண போறீங்க? டாக்குமெண்ட் கொடுத்தால் அனைத்து இந்திய நீதிமன்றங்களுக்கும் ஏற்ற பெட்டிஷன் உருவாக்கப்படும்.');
+        setActivity('Unlocked');
       } else {
         document.getElementById('pinMsg').innerText = 'Wrong PIN!';
       }
     }
     function lockApp() {
-      if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch {}
+      stopFriendLiveMode();
       document.getElementById('lockScreen').style.display = 'flex';
     }
     function changePin() {
@@ -320,7 +482,6 @@
 
     function classifyAllIndiaCourtAndPetition(text) {
       const t = text.toLowerCase();
-
       let court = 'SUBORDINATE / CIVIL COURT (ALL-INDIA CIVIL JURISDICTION)';
       let courtHeading = "IN THE COURT OF THE CIVIL / SUBORDINATE JUDGE";
       let petitionType = 'Civil Petition / Suit / Interlocutory Application';
@@ -333,64 +494,44 @@
         court = 'SUPREME COURT OF INDIA';
         courtHeading = "IN THE SUPREME COURT OF INDIA\n(CIVIL / CRIMINAL APPELLATE / WRIT JURISDICTION)";
         petitionType = /article\s*32|writ/i.test(t) ? 'Writ Petition under Art. 32' : 'Special Leave Petition (SLP)';
-        provisions = `Suggested Constitutional / Supreme Court Provisions (Verify):
-- Constitution of India: Art. 136 (SLP) / Art. 32 (Writ)
-- Supreme Court Rules & Practice Directions (Verify latest rules)`;
+        provisions = `Suggested Constitutional / Supreme Court Provisions (Verify):\n- Constitution of India: Art. 136 (SLP) / Art. 32 (Writ)`;
       } else if (/high\s*court|writ|article\s*226|quash|482|528/i.test(t)) {
         const hcMatch = text.match(/high\s*court\s*(?:of\s*judicature\s*at\s*)?([a-zA-Z\s]+?)(?:,|\n|\.)/i);
         const hcName = hcMatch ? hcMatch[1].trim().toUpperCase() : 'MADRAS / RELEVANT HIGH COURT';
         court = 'HIGH COURT OF ' + hcName;
         courtHeading = "IN THE HIGH COURT OF JUDICATURE AT " + hcName;
-        if (/quash|482|528|fir|charge\s*sheet/i.test(t)) {
-          petitionType = 'Criminal Quash / Inherent Jurisdiction Petition';
-          provisions = `Suggested Criminal Quash Provisions (Verify):
-- BNSS Sec. 528 / CrPC Sec. 482 (Inherent powers) & BNS / IPC relevant sections`;
-        } else {
-          petitionType = 'Writ Petition under Article 226';
-          provisions = `Suggested Writ Provisions (Verify):
-- Constitution of India: Art. 226 & High Court Writ Rules`;
-        }
-      } else if (/bail|anticipatory|remand|police|fir|accused|magistrate|sessions|criminal/i.test(t)) {
-        court = /sessions|anticipatory/i.test(t) ? 'COURT OF SESSION / CRIMINAL COURT' : 'JUDICIAL MAGISTRATE / CRIMINAL COURT';
-        courtHeading = "IN THE COURT OF THE " + court;
-        petitionType = /anticipatory|pre-arrest/i.test(t) ? 'Anticipatory Bail Petition' : (/bail/i.test(t) ? 'Bail Application' : 'Criminal Petition / Application');
-        provisions = `Suggested Criminal Procedure Provisions (Verify):
-- BNSS / CrPC Bail & Criminal Procedure provisions + BNS / IPC relevant sections`;
-      } else if (/divorce|custody|maintenance|family\s*court|matrimonial|husband|wife/i.test(t)) {
+        petitionType = /quash|482|528|fir|charge\s*sheet/i.test(t) ? 'Criminal Quash Petition' : 'Writ Petition under Article 226';
+        provisions = `Suggested High Court Provisions (Verify):\n- Constitution Art. 226 / BNSS Sec. 528 as applicable`;
+      } else if (/bail|anticipatory|magistrate|sessions|criminal/i.test(t)) {
+        court = 'CRIMINAL / SESSIONS / MAGISTRATE COURT';
+        courtHeading = "IN THE CRIMINAL COURT";
+        petitionType = /anticipatory/i.test(t) ? 'Anticipatory Bail Petition' : 'Bail / Criminal Petition';
+        provisions = `Suggested Criminal Provisions (Verify):\n- BNSS / CrPC & BNS / IPC provisions as applicable`;
+      } else if (/divorce|custody|maintenance|family\s*court/i.test(t)) {
         court = 'FAMILY COURT';
         courtHeading = "IN THE FAMILY COURT";
-        petitionType = /maintenance/i.test(t) ? 'Maintenance Petition' : (/custody/i.test(t) ? 'Child Custody / Guardianship Petition' : 'Matrimonial / Family Petition');
-        provisions = `Suggested Family / Personal Law Provisions (Verify):
-- Family Courts Act, 1984 + applicable Personal Law / Maintenance provisions`;
-      } else if (/consumer|deficiency|service|forum|commission/i.test(t)) {
-        court = 'CONSUMER DISPUTES REDRESSAL COMMISSION';
-        courtHeading = "BEFORE THE DISTRICT / STATE CONSUMER DISPUTES REDRESSAL COMMISSION";
-        petitionType = 'Consumer Complaint';
-        provisions = `Suggested Consumer Law Provisions (Verify):
-- Consumer Protection Act, 2019 (Relevant complaint & jurisdiction sections)`;
+        petitionType = 'Family / Matrimonial / Maintenance Petition';
+        provisions = `Suggested Family Law Provisions (Verify):\n- Family Courts Act, 1984 & relevant personal/maintenance provisions`;
       } else if (/madurai/i.test(t) && /sub/i.test(t)) {
         court = 'SUBORDINATE COURT, MADURAI';
         courtHeading = "IN THE COURT OF THE SUBORDINATE JUDGE, MADURAI";
         petitionType = 'Civil Dispute Petition / Suit / I.A.';
       }
-
       return { court, courtHeading, petitionType, provisions };
     }
 
     function autoGenerateFromDocument() {
       const sourceDoc = draftArea.value.trim();
       if (!sourceDoc) {
-        const msg = 'முதலில் டாக்குமெண்ட் விவரத்தை பேஸ்ட் செய்யவும் அல்லது ஃபைல் லோட் செய்யவும்.';
-        qaBox.value = msg + (qaBox.value ? '\n\n' + qaBox.value : '');
-        speakTamil(msg);
+        const msg = 'நண்பா, முதலில் டாக்குமெண்ட் விவரம் பேஸ்ட் பண்ணுங்க அல்லது ஃபைல் லோட் பண்ணுங்க.';
+        qaBox.value = 'கலை: ' + msg + (qaBox.value ? '\n\n' + qaBox.value : '');
+        speakFriendReply(msg);
         return;
       }
 
       const info = classifyAllIndiaCourtAndPetition(sourceDoc);
       document.getElementById('docTitle').value = info.petitionType + ' - ' + info.court;
       document.getElementById('caseQuery').value = info.court + ' | ' + info.petitionType;
-
-      const summaryFacts = sourceDoc.slice(0, 1400);
 
       draftArea.value = `==================== DOCKET SHEET ====================
 COURT          : ${info.court}
@@ -411,124 +552,100 @@ Between:
 PETITION / APPLICATION DRAFT:
 
 1. JURISDICTION & MAINTAINABILITY:
-This Hon'ble Court has jurisdiction to entertain and adjudicate upon this ${info.petitionType}.
+This Hon'ble Court has jurisdiction to entertain this ${info.petitionType}.
 
 2. FACTS AS PER DOCUMENT SUBMITTED:
-${summaryFacts}
+${sourceDoc.slice(0, 1400)}
 
 3. GROUNDS & LEGAL SUBMISSIONS:
-(a) The action is bonafide, timely, and supported by the document/material placed on record.
-(b) Grave prejudice would be caused to the Petitioner if relief is not granted.
+(a) The claim is bonafide, timely, and supported by records.
+(b) Grave prejudice would be caused if relief is not granted.
 
 4. PRAYER:
-Wherefore, it is prayed that this Hon'ble Court may be pleased to grant appropriate relief as sought in the ${info.petitionType} and pass such further or other orders as this Hon'ble Court may deem fit and proper.
+Wherefore, it is prayed that this Hon'ble Court may grant appropriate relief as sought and pass such further orders as this Hon'ble Court deems fit.
 
 Counsel for Petitioner
-(Verify local court format, court fee, limitation & bare act provisions before filing)`;
+(Verify local court format, court fee & bare act provisions before filing)`;
 
       judgementBox.value = `COURT: ${info.court}\nPETITION TYPE: ${info.petitionType}\n\n${info.provisions}`;
       onDraftChange();
-      setActivity('Auto-Generated: ' + info.petitionType + ' (' + info.court + ')');
-      speakTamil('கொடுக்கப்பட்ட டாக்குமெண்ட்டின் அடிப்படையில் ' + info.court + ' நீதிமன்றத்திற்கான ' + info.petitionType + ' டாக்கெட் மற்றும் டிராஃப்ட் தயார் செய்யப்பட்டுள்ளது. சம்பந்தப்பட்ட செக்ஷன்ஸ் மற்றும் கோர்ட் விதிகளை சரிபார்த்து உறுதி செய்யவும்.');
+      setActivity('Generated ' + info.petitionType);
+      speakFriendReply('மச்சான், ' + info.court + '-க்கு ' + info.petitionType + ' டாக்கெட் மற்றும் டிராஃப்ட் ரெடி பண்ணிட்டேன். செக்ஷன்ஸ் மற்றும் கோர்ட் ரூல்ஸை ஒரு தடவை அபிஷியலா செக் பண்ணிக்கோ.');
     }
 
     function analyzeVoiceDrawbacks() {
       const combined = (document.getElementById('secQuestion').value + ' ' + draftArea.value).toLowerCase();
       const risks = [];
-
       if (/admission|ஒப்புதல்|ஏற்றுக் கொண்டேன்|சம்மதி|தவறு|mistake/i.test(combined)) {
-        risks.push('எதிர் தரப்புக்கு சாதகமாகவோ அல்லது நம் தரப்புக்கு பாதகமாகவோ ஏதேனும் ஒப்புதல் (admission) வந்தால், அது வழக்கு/பெட்டிஷனில் பின்னடைவாக மாறலாம்.');
+        risks.push('நம்ம சைடுக்கு பாதகமான ஒப்புதல் எதுவும் வந்துட்டா எதிர் தரப்பு அதை பயன்படுத்த வாய்ப்பு இருக்கு.');
       }
       if (/date|தேதி|limitation|காலம்|வருடம்|முன்பு|பழைய/i.test(combined)) {
-        risks.push('காலவரையறை (Limitation) மற்றும் தேதி விவரங்களில் முரண்பாடு இருந்தால் மனு நிராகரிக்கப்படும் அல்லது தாமதமாகும் அபாயம் உள்ளது.');
+        risks.push('காலவரையறை மற்றும் தேதி விவரங்கள் முரண்பட்டா கேஸ்ல சிக்கல் வரலாம்.');
       }
       if (/document|ஆவணம்|பத்திரம்|proof|சாட்சி|சொல்றேன்|வாய்மொழி/i.test(combined)) {
-        risks.push('ஆவண ஆதாரம் (documentary proof) இல்லாத கூற்றுகளை உறுதியாக முன்வைத்தால், கோர்ட்டில் நிரூபிப்பதில் சிக்கல் வரலாம்.');
+        risks.push('ஆவண ஆதாரம் இல்லாம உறுதியா சொன்னா கோர்ட்ல நிரூபிக்க கஷ்டமா இருக்கும்.');
       }
       if (risks.length === 0) {
-        risks.push('ஒரு விஷயத்தை பெட்டிஷனில் கூறும்போது, அது நம் தரப்பு வாதத்திற்கு பாதகமாக மாறுமா (adverse inference), முரண்பாடாக இருக்குமா, அல்லது தேவையற்ற சட்ட சிக்கலை ஏற்படுத்துமா என்பதை கவனிக்க வேண்டும்.');
+        risks.push('இந்த விஷயத்தை சொன்னா எதிர் தரப்புக்கு சாதகமா மாறுமா, அல்லது நம் தரப்புக்கு பின்னடைவா வருமா என்பதை கவனமா பார்க்கணும்.');
       }
-
-      const reply =
-        'இந்த விஷயத்தை சொன்னால் வரக்கூடிய சாத்தியமான பாதிப்புகள் (Drawbacks): ' +
-        risks.join(' ') +
-        ' (இறுதி முடிவு அபிஷியல் சட்ட நூல்கள் மற்றும் வழக்கறிஞர் ஆலோசனைப்படி இருக்க வேண்டும்.)';
-
-      qaBox.value = reply + (qaBox.value ? '\n\n' + qaBox.value : '');
-      setActivity('Voice Drawback Analysis Spoken');
-      speakTamil(reply);
+      const reply = 'நண்பா, இந்த விஷயத்தை சொன்னா வரக்கூடிய ரிஸ்க் இதுதான்: ' + risks.join(' ') + ' (இறுதி முடிவு அபிஷியல் சட்ட நூல்கள் மற்றும் அட்வகேட் ஆலோசனைப்படி இருக்கணும்.)';
+      qaBox.value = 'கலை: ' + reply + (qaBox.value ? '\n\n' + qaBox.value : '');
+      speakFriendReply(reply);
     }
 
-    function processAiVoiceCommand(spoken) {
-      const low = spoken.toLowerCase().trim();
-      document.getElementById('secQuestion').value = spoken;
-      setActivity('Voice Command: "' + spoken + '"');
+    async function handleUserUtterance(spoken) {
+      setActivity('You Said: "' + spoken + '"');
+      qaBox.value = 'நீங்க: ' + spoken + (qaBox.value ? '\n\n' + qaBox.value : '');
 
       if (/drawback|பாதிப்பு|பாதகம்|சொல்ல கூடாது|சொல்லக்கூடாது|risk|பிரச்சனை/i.test(spoken)) {
         analyzeVoiceDrawbacks();
         return;
       }
-
-      if (/petition|பெட்டிஷன்|create|உருவாக்கு|draft|டிராஃப்ட்/i.test(low)) {
+      if (/petition\s*(create|draft|உருவாக்கு|பண்ணு)|auto\s*create/i.test(spoken)) {
         autoGenerateFromDocument();
         return;
       }
-
-      if (/save|சேவ்|பத்திரப்படுத்து/i.test(low)) {
+      if (/^(save|சேவ்)\s*(pannu|பண்ணு)?$/i.test(spoken.trim())) {
         saveDoc();
         return;
       }
 
-      if (/export|doc|டவுன்லோட்/i.test(low)) {
-        downloadDoc();
-        return;
+      const apiKey = (localStorage.getItem('kalai_gemini_key') || '').trim();
+      if (apiKey) {
+        setActivity('Kalai Friend Thinking via Gemini...');
+        chatHistory.push({ role: 'user', parts: [{ text: spoken }] });
+        if (chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+
+        try {
+          const res = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                system_instruction: {
+                  parts: [{
+                    text: 'You are Kalai, a warm, real-time Tamil voice friend and legal drafting buddy. Reply naturally and conversationally in Tamil like a close friend who understands legal drafting, petitions, courts, and everyday talk. Keep spoken replies concise, clear, and friendly. Note officially when legal rules/sections should be verified.'
+                  }]
+                },
+                contents: chatHistory
+              })
+            }
+          );
+          const data = await res.json();
+          const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'சாரி நண்பா, இப்போ சரியா பதில் வரல. இன்னொரு தடவை சொல்லுங்க.';
+          chatHistory.push({ role: 'model', parts: [{ text: reply }] });
+          qaBox.value = 'கலை: ' + reply + (qaBox.value ? '\n\n' + qaBox.value : '');
+          speakFriendReply(reply);
+          return;
+        } catch {
+          // Fallback to friendly local reply
+        }
       }
 
-      if (/print|பிரிண்ட்/i.test(low)) {
-        window.print();
-        return;
-      }
-
-      draftArea.value += (draftArea.value ? '\n' : '') + spoken;
-      onDraftChange();
-      speakTamil('டாக்குமெண்ட்டில் சேர்க்கப்பட்டது.');
-    }
-
-    function startVoiceCommander(lang) {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) {
-        setActivity('Browser Speech API Unavailable — Use HTTPS or Gboard Mic');
-        return;
-      }
-      if (commanderRec) { try { commanderRec.stop(); } catch {} }
-      commanderRec = new SR();
-      commanderRec.lang = lang || 'ta-IN';
-      commanderRec.continuous = true;
-      commanderRec.interimResults = false;
-
-      commanderRec.onstart = () => {
-        setMicSignal(true, 'VOICE AI ON');
-        setActivity('Listening to Your Voice Commands...');
-      };
-      commanderRec.onresult = (e) => {
-        const transcript = e.results[e.results.length - 1][0].transcript;
-        processAiVoiceCommand(transcript);
-      };
-      commanderRec.onerror = (e) => {
-        setMicSignal(false);
-        setActivity('Mic Error: ' + e.error + ' (Use HTTPS link & Allow Mic)');
-      };
-      commanderRec.onend = () => {
-        setMicSignal(false);
-        setActivity('Voice AI Mic Stopped');
-      };
-      commanderRec.start();
-    }
-
-    function stopVoiceCommander() {
-      if (commanderRec) { try { commanderRec.stop(); } catch {} }
-      setMicSignal(false);
-      setActivity('Voice AI Stopped');
+      const friendlyReply = 'கேட்டேன் நண்பா! "' + spoken + '" பத்தி சொன்னீங்க. இன்னும் தெளிவா சொல்லுங்க — டிராஃப்ட் பண்ணணுமா, ரிஸ்க் பார்க்கணுமா, இல்ல சும்மா பேசணுமா? (மேல Gemini API கீ சேர்த்தா இன்னும் சூப்பரா பதில் சொல்வேன்!)';
+      qaBox.value = 'கலை: ' + friendlyReply + (qaBox.value ? '\n\n' + qaBox.value : '');
+      speakFriendReply(friendlyReply);
     }
 
     function saveDoc() {
@@ -539,7 +656,7 @@ Counsel for Petitioner
       if (idx >= 0) docs[idx] = rec; else docs.push(rec);
       setDocs(docs);
       setActivity('Saved "' + title + '"');
-      speakTamil(title + ' சேவ் செய்யப்பட்டது.');
+      speakFriendReply('சேவ் பண்ணிட்டேன் நண்பா, ' + title + ' பத்திரமா இருக்கு.');
     }
 
     function getDocs() {
