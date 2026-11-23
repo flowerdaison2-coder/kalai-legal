@@ -1,1 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalai Legal Suite v6 — Canva & Chamber Edition</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #f3e8ff 0%, #e0f2fe 45%, #fef3c7 100%);
+      color: #1e1b4b;
+      min-height: 100vh;
+    }
+
+    #lockScreen {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #1e1b4b, #312e81);
+      z-index: 9999; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; padding: 20px;
+      text-align: center; color: #fff;
+    }
+    #lockScreen input {
+      padding: 10px 14px; font-size: 16px; border-radius: 12px;
+      border: 2px solid #fbbf24; background: rgba(255,255,255,0.12);
+      color: #fff; margin: 12px 0; text-align: center; width: 200px; letter-spacing: 4px;
+    }
+
+    /* CANVA-STYLE TOP HEADER */
+    header {
+      background: linear-gradient(90deg, #1e1b4b 0%, #4338ca 55%, #7e22ce 100%);
+      color: #fff; padding: 8px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 8px; box-shadow: 0 4px 14px rgba(30, 27, 75, 0.22);
+    }
+    header h1 { font-size: 14px; margin: 0; letter-spacing: 0.3px; color: #fde68a; }
+
+    /* LIVE STATUS BAR */
+    .status-bar {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(99, 102, 241, 0.25);
+      padding: 6px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 8px; font-size: 12px; font-weight: 600;
+    }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px; border-radius: 999px;
+      background: #eef2ff; color: #3730a3; border: 1px solid #c7d2fe;
+    }
+    .status-pill.activity {
+      background: #fef3c7; color: #92400e; border-color: #fcd34d;
+    }
+
+    .mic-signal {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 11px; border-radius: 999px; font-size: 11px; font-weight: 800;
+      background: rgba(255,255,255,0.16); color: #f8fafc;
+    }
+    .mic-signal.active {
+      background: #16a34a; color: #fff; box-shadow: 0 0 12px #22c55e;
+      animation: pulse 1.1s infinite;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #cbd5e1; }
+    .mic-signal.active .dot { background: #fef08a; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    /* 80% LEFT + 20% RIGHT */
+    .workspace {
+      display: grid; grid-template-columns: 4fr 1fr;
+      gap: 12px; padding: 10px 12px 12px;
+      height: calc(100vh - 82px);
+    }
+    .right-col {
+      display: grid; grid-template-rows: 1fr 1fr;
+      gap: 12px; min-height: 0;
+    }
+
+    /* CANVA-STYLE CARDS */
+    .panel {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1.5px solid rgba(129, 140, 248, 0.3);
+      border-radius: 16px; padding: 11px;
+      display: flex; flex-direction: column; min-height: 0;
+      box-shadow: 0 8px 24px rgba(30, 27, 75, 0.08);
+    }
+    .panel h2 {
+      font-size: 12px; margin: 0 0 7px 0; color: #1e1b4b;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(90deg, #ede9fe, #e0f2fe);
+      padding: 4px 10px; border-radius: 999px; width: fit-content;
+    }
+
+    textarea {
+      flex: 1; width: 100%; background: #fcfaff; color: #0f172a;
+      border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 10px;
+      font-size: 13px; line-height: 1.55; resize: none; min-height: 45px;
+    }
+    textarea:focus, input:focus, select:focus {
+      outline: none; border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+    }
+    input[type="text"], input[type="password"], select {
+      width: 100%; padding: 6px 9px; border-radius: 10px;
+      border: 1.5px solid #cbd5e1; background: #fff; color: #0f172a;
+      font-size: 12px; margin-bottom: 6px;
+    }
+
+    /* FUNKY + LAW PROFESSIONAL BUTTONS */
+    .btn-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+    button {
+      border: none; color: #fff; padding: 6px 11px;
+      border-radius: 999px; font-size: 11px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.2px;
+      transition: transform 0.14s ease, box-shadow 0.14s ease;
+      box-shadow: 0 3px 8px rgba(15, 23, 42, 0.16);
+    }
+    button:hover { transform: translateY(-1.5px) rotate(-1deg); box-shadow: 0 5px 12px rgba(15, 23, 42, 0.24); }
+    button:active { transform: scale(0.97); }
+
+    .btn-law { background: linear-gradient(135deg, #1e1b4b, #4338ca); }
+    .btn-funky-green { background: linear-gradient(135deg, #059669, #10b981); }
+    .btn-funky-amber { background: linear-gradient(135deg, #b45309, #f59e0b); color: #fff; }
+    .btn-funky-pink { background: linear-gradient(135deg, #be185d, #ec4899); }
+    .btn-funky-purple { background: linear-gradient(135deg, #6d28d9, #a855f7); }
+    .btn-funky-red { background: linear-gradient(135deg, #b91c1c, #ef4444); }
+    .btn-api { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+
+    .doc-bar {
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+      background: #f5f3ff; padding: 7px; border-radius: 12px;
+      border: 1px solid #ddd6fe; margin-bottom: 7px;
+    }
+    .doc-bar input { flex: 1; min-width: 130px; margin-bottom: 0; }
+    .doc-bar select { width: auto; min-width: 145px; margin-bottom: 0; }
+    .hint { font-size: 11px; color: #475569; margin-top: 5px; }
+
+    .api-drawer {
+      display: none; background: #fffbeb; border-bottom: 2px solid #f59e0b;
+      padding: 8px 14px;
+    }
+
+    @media (max-width: 900px) {
+      .workspace { grid-template-columns: 1fr; height: auto; }
+      .right-col { grid-template-rows: auto auto; }
+    }
+    @media print {
+      #lockScreen, header, .status-bar, .api-drawer, .doc-bar, .right-col, .btn-row, .hint, h2 { display: none !important; }
+      .workspace { display: block; height: auto; padding: 0; }
+      .panel { border: none; box-shadow: none; padding: 0; background: #fff; }
+      textarea { border: none; background: #fff; color: #000; font-size: 13pt; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="lockScreen">
+    <h2 style="color:#fde68a;margin:0;font-size:20px;">Kalai Chambers — Private Access</h2>
+    <p style="font-size:13px;color:#e0e7ff;margin:6px 0 0;">Enter PIN (Default: 1234)</p>
+    <input type="password" id="pinInput" maxlength="8" placeholder="PIN" />
+    <div style="display:flex;gap:8px;">
+      <button class="btn-funky-green" onclick="unlockApp()">Unlock</button>
+      <button class="btn-funky-amber" onclick="changePin()">Change PIN</button>
+    </div>
+    <div id="pinMsg" style="color:#fca5a5;font-size:12px;margin-top:8px;"></div>
+  </div>
+
+  <header>
+    <h1>Kalai Legal Suite v6 — Voice & Chamber Edition</h1>
+    <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
+      <span id="micSignal" class="mic-signal"><span class="dot"></span><span id="micSignalText">MIC OFF</span></span>
+      <button class="btn-api" onclick="toggleApiDrawer()">Gemini API</button>
+      <button class="btn-funky-red" onclick="lockApp()">Lock</button>
+    </div>
+  </header>
+
+  <!-- LIVE STATUS BAR: CURRENT PAGE + CURRENT ACTIVITY -->
+  <div class="status-bar">
+    <span id="pageStatusPill" class="status-pill">Page: 1 / 80</span>
+    <span id="activityStatusPill" class="status-pill activity">Status: Ready in Chamber</span>
+  </div>
+
+  <div id="apiDrawer" class="api-drawer">
+    <div style="font-size:12px;font-weight:700;margin-bottom:4px;color:#78350f;">Gemini API Key (Saved locally on this device)</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <input type="password" id="geminiApiKeyInput" placeholder="Paste Gemini API Key..." style="flex:1;min-width:180px;margin-bottom:0;" />
+      <button class="btn-funky-green" onclick="saveApiKey()">Save Key</button>
+      <button class="btn-funky-red" onclick="clearApiKey()">Clear</button>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <!-- SCREEN 1 (80%) -->
+    <div class="panel">
+      <h2>1. Petition & Voice Workspace (80%)</h2>
+
+      <div class="doc-bar">
+        <input type="text" id="docTitle" placeholder="Case / Document title..." />
+        <button class="btn-funky-green" onclick="saveNewOrUpdateDoc()">Save Doc</button>
+        <select id="docLibrarySelect" onchange="loadSelectedDoc()">
+          <option value="">-- Saved Docs --</option>
+        </select>
+        <button class="btn-funky-red" onclick="deleteSelectedDoc()">Delete</button>
+      </div>
+
+      <textarea
+        id="draftArea"
+        oninput="onDraftChange()"
+        onclick="updateCurrentPageFromCursor()"
+        onkeyup="updateCurrentPageFromCursor()"
+        onscroll="updateCurrentPageFromCursor()"
+        placeholder="Speak or type here. Voice command tip: say 'replace oldword with newword' or 'kalai one' for Screen 3..."
+      ></textarea>
+
+      <div class="hint" id="voiceHint">Voice commands supported in speech: "replace [a] with [b]" | "kalai one" -> Screen 3 mic.</div>
+
+      <div class="btn-row">
+        <button class="btn-funky-green" onclick="startDraftMic('en-IN')">Speak (EN)</button>
+        <button class="btn-funky-pink" onclick="startDraftMic('ta-IN')">Speak (TA)</button>
+        <button class="btn-funky-red" onclick="stopDraftMic()">Stop Mic</button>
+        <button class="btn-funky-amber" onclick="insertTemplate()">Petition Format</button>
+        <button class="btn-law" onclick="downloadDoc()">Export .DOC</button>
+        <button class="btn-funky-purple" onclick="window.print()">Print</button>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN (20%) -->
+    <div class="right-col">
+      <!-- SCREEN 2 -->
+      <div class="panel">
+        <h2>2. HC & SC Judgements</h2>
+        <input type="text" id="caseQuery" placeholder="Case / judgement search (TA or EN)..." />
+        <div class="btn-row">
+          <button class="btn-law" onclick="googleSearchFrom('caseQuery')">Google</button>
+          <button class="btn-funky-amber" onclick="searchJudgement('hc')">HC</button>
+          <button class="btn-funky-purple" onclick="searchJudgement('sc')">SC</button>
+          <button class="btn-api" onclick="runGemini('judgement')">API Cases</button>
+        </div>
+        <textarea id="judgementBox" onfocus="setActivity('Reviewing Judgements & Citations')" placeholder="Judgements & citations..."></textarea>
+      </div>
+
+      <!-- SCREEN 3 -->
+      <div class="panel">
+        <h2>3. Kalai One, Sections & Q&A</h2>
+        <input type="text" id="secQuestion" placeholder="Section doubt or any Q (TA/EN)..." />
+        <div class="btn-row">
+          <button class="btn-funky-green" onclick="activateKalaiOne('en-IN')">Kalai One (EN)</button>
+          <button class="btn-funky-pink" onclick="activateKalaiOne('ta-IN')">Kalai One (TA)</button>
+          <button class="btn-law" onclick="googleSearchFrom('secQuestion')">Google</button>
+          <button class="btn-api" onclick="runGemini('section')">Ask API</button>
+        </div>
+        <textarea id="qaBox" onfocus="setActivity('Analysing Sections & Q&A')" placeholder="Section analysis & general Q&A..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MAX_PAGES = 80;
+    const WORDS_PER_PAGE = 300;
+
+    function getStoredPin() { return localStorage.getItem('kalai_pin') || '1234'; }
+    function unlockApp() {
+      if (document.getElementById('pinInput').value.trim() === getStoredPin()) {
+        document.getElementById('lockScreen').style.display = 'none';
+        document.getElementById('pinInput').value = '';
+        setActivity('Unlocked — Ready for Drafting');
+      } else {
+        document.getElementById('pinMsg').innerText = 'Wrong PIN!';
+      }
+    }
+    function lockApp() {
+      setActivity('Chamber Locked');
+      document.getElementById('lockScreen').style.display = 'flex';
+    }
+    function changePin() {
+      const p = prompt('Enter new PIN (min 4 chars):');
+      if (p && p.trim().length >= 4) {
+        localStorage.setItem('kalai_pin', p.trim());
+        alert('PIN updated!');
+      }
+    }
+
+    function toggleApiDrawer() {
+      const d = document.getElementById('apiDrawer');
+      const open = d.style.display === 'block';
+      d.style.display = open ? 'none' : 'block';
+      document.getElementById('geminiApiKeyInput').value = localStorage.getItem('kalai_gemini_key') || '';
+      setActivity(open ? 'API Settings Closed' : 'Configuring Gemini API Key');
+    }
+    function saveApiKey() {
+      localStorage.setItem('kalai_gemini_key', document.getElementById('geminiApiKeyInput').value.trim());
+      setActivity('Gemini API Key Saved');
+      alert('Gemini API Key saved locally.');
+    }
+    function clearApiKey() {
+      localStorage.removeItem('kalai_gemini_key');
+      document.getElementById('geminiApiKeyInput').value = '';
+      setActivity('Gemini API Key Cleared');
+    }
+
+    function setActivity(msg) {
+      document.getElementById('activityStatusPill').innerText = 'Status: ' + msg;
+    }
+
+    function setMicSignal(isOn, label) {
+      const badge = document.getElementById('micSignal');
+      const txt = document.getElementById('micSignalText');
+      if (isOn) {
+        badge.classList.add('active');
+        txt.innerText = label || 'MIC ON';
+      } else {
+        badge.classList.remove('active');
+        txt.innerText = 'MIC OFF';
+      }
+    }
+
+    const draftArea = document.getElementById('draftArea');
+    const judgementBox = document.getElementById('judgementBox');
+    const qaBox = document.getElementById('qaBox');
+
+    function estimateTotalPages(text) {
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      return Math.max(1, Math.ceil(words / WORDS_PER_PAGE));
+    }
+
+    function updateCurrentPageFromCursor() {
+      const totalPages = estimateTotalPages(draftArea.value);
+      const pos = typeof draftArea.selectionStart === 'number' ? draftArea.selectionStart : draftArea.value.length;
+      const beforeText = draftArea.value.slice(0, pos);
+      const wordsBefore = beforeText.trim() ? beforeText.trim().split(/\s+/).length : 0;
+      const currentPage = Math.min(MAX_PAGES, Math.max(1, Math.ceil(wordsBefore / WORDS_PER_PAGE) || 1));
+      const pill = document.getElementById('pageStatusPill');
+      pill.innerText = 'Page: ' + currentPage + ' of ' + totalPages + ' (Max ' + MAX_PAGES + ')';
+      pill.style.color = totalPages > MAX_PAGES ? '#b91c1c' : '#3730a3';
+    }
+
+    function onDraftChange() {
+      updateCurrentPageFromCursor();
+      setActivity('Drafting Petition...');
+      localStorage.setItem('kalai_autosave_draft', draftArea.value);
+    }
+
+    function getDocs() {
+      try { return JSON.parse(localStorage.getItem('kalai_docs') || '[]'); }
+      catch { return []; }
+    }
+    function setDocs(list) {
+      localStorage.setItem('kalai_docs', JSON.stringify(list));
+      refreshDocDropdown();
+    }
+    function refreshDocDropdown() {
+      const sel = document.getElementById('docLibrarySelect');
+      const docs = getDocs();
+      sel.innerHTML = '<option value="">-- Saved Docs (' + docs.length + ') --</option>';
+      docs.forEach((d, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = d.title + ' (' + d.pages + 'p)';
+        sel.appendChild(opt);
+      });
+    }
+    function saveNewOrUpdateDoc() {
+      const title = (document.getElementById('docTitle').value || '').trim() || ('Case_' + new Date().toLocaleDateString());
+      const pages = estimateTotalPages(draftArea.value);
+      if (pages > MAX_PAGES) return alert('Max 80 pages per document. Current: ' + pages);
+      const docs = getDocs();
+      const idx = docs.findIndex(d => d.title.toLowerCase() === title.toLowerCase());
+      const rec = { title, pages, draft: draftArea.value, judgements: judgementBox.value, qa: qaBox.value };
+      if (idx >= 0) docs[idx] = rec;
+      else docs.push(rec);
+      setDocs(docs);
+      setActivity('Saved "' + title + '" Permanently');
+      alert('Saved: ' + title);
+    }
+    function loadSelectedDoc() {
+      const idx = document.getElementById('docLibrarySelect').value;
+      if (idx === '') return;
+      const d = getDocs()[Number(idx)];
+      if (!d) return;
+      document.getElementById('docTitle').value = d.title;
+      draftArea.value = d.draft || '';
+      judgementBox.value = d.judgements || '';
+      qaBox.value = d.qa || '';
+      updateCurrentPageFromCursor();
+      setActivity('Opened "' + d.title + '"');
+    }
+    function deleteSelectedDoc() {
+      const sel = document.getElementById('docLibrarySelect');
+      const idx = sel.value;
+      if (idx === '') return alert('Select a document first.');
+      const docs = getDocs();
+      const target = docs[Number(idx)];
+      if (!target) return;
+      if (confirm('Delete "' + target.title + '" permanently?')) {
+        docs.splice(Number(idx), 1);
+        setDocs(docs);
+        sel.value = '';
+        setActivity('Deleted "' + target.title + '"');
+      }
+    }
+
+    window.onload = () => {
+      refreshDocDropdown();
+      draftArea.value = localStorage.getItem('kalai_autosave_draft') || '';
+      updateCurrentPageFromCursor();
+    };
+
+    let draftRec, screen3Rec;
+
+    function applyVoiceReplaceIfAny(transcript) {
+      const match = transcript.match(/replace\s+(.+?)\s+with\s+(.+)/i);
+      if (!match) return false;
+      const findW = match[1].trim();
+      const repW = match[2].trim();
+      if (!findW) return false;
+      const parts = draftArea.value.split(findW);
+      if (parts.length > 1) {
+        draftArea.value = parts.join(repW);
+        onDraftChange();
+        setActivity('Voice Replaced "' + findW + '" -> "' + repW + '"');
+        document.getElementById('voiceHint').innerText = 'Replaced "' + findW + '" with "' + repW + '" (' + (parts.length - 1) + 'x).';
+      } else {
+        setActivity('Word "' + findW + '" Not Found for Voice Replace');
+      }
+      return true;
+    }
+
+    function startDraftMic(lang) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        setActivity('Use Gboard Mic (Browser Mic Unavailable)');
+        return;
+      }
+      if (draftRec) { try { draftRec.stop(); } catch {} }
+      draftRec = new SR();
+      draftRec.lang = lang;
+      draftRec.continuous = true;
+      draftRec.interimResults = false;
+      draftRec.onstart = () => {
+        setMicSignal(true, 'MIC 1 ON (' + lang + ')');
+        setActivity('Dictating Draft (' + lang + ')...');
+      };
+      draftRec.onresult = (e) => {
+        const t = e.results[e.results.length - 1][0].transcript;
+        if (/kalai\s*one/i.test(t)) {
+          activateKalaiOne(lang);
+          return;
+        }
+        if (applyVoiceReplaceIfAny(t)) return;
+        draftArea.value += (draftArea.value ? ' ' : '') + t;
+        onDraftChange();
+      };
+      draftRec.onerror = (e) => {
+        setMicSignal(false);
+        setActivity('Mic Error: ' + e.error + ' (Use HTTPS or Gboard Mic)');
+      };
+      draftRec.onend = () => {
+        setMicSignal(false);
+        setActivity('Draft Mic Stopped');
+      };
+      draftRec.start();
+    }
+
+    function stopDraftMic() {
+      if (draftRec) { try { draftRec.stop(); } catch {} }
+      setMicSignal(false);
+      setActivity('Mic Stopped');
+    }
+
+    function activateKalaiOne(lang) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        setActivity('Kalai One: Use Gboard Mic in Screen 3');
+        return;
+      }
+      if (screen3Rec) { try { screen3Rec.stop(); } catch {} }
+      screen3Rec = new SR();
+      screen3Rec.lang = lang;
+      screen3Rec.continuous = false;
+      screen3Rec.interimResults = false;
+      setMicSignal(true, 'KALAI ONE ON');
+      setActivity('Kalai One Listening (' + lang + ')...');
+      screen3Rec.onresult = (e) => {
+        const spoken = e.results[0][0].transcript;
+        document.getElementById('secQuestion').value = spoken;
+        setMicSignal(false);
+        setActivity('Kalai One Heard: "' + spoken + '"');
+        runGemini('section');
+      };
+      screen3Rec.onerror = (e) => {
+        setMicSignal(false);
+        setActivity('Kalai One Error: ' + e.error);
+      };
+      screen3Rec.onend = () => { setMicSignal(false); };
+      screen3Rec.start();
+    }
+
+    function insertTemplate() {
+      const tpl = `IN THE HON'BLE HIGH COURT OF JUDICATURE AT MADRAS\n\nCase No. _____ of 2026\n\nPetitioner:\n-Vs-\nRespondent:\n\nFACTS:\n\nGROUNDS:\n\nPRAYER:\n\nCounsel for Petitioner`;
+      draftArea.value = tpl + '\n\n' + draftArea.value;
+      onDraftChange();
+      setActivity('Inserted Madras HC Petition Format');
+    }
+
+    function googleSearchFrom(inputId) {
+      const q = document.getElementById(inputId).value.trim();
+      if (!q) return alert('Enter query first.');
+      setActivity('Searching Google: "' + q + '"');
+      window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank');
+    }
+
+    function searchJudgement(court) {
+      const q = document.getElementById('caseQuery').value.trim();
+      if (!q) return alert('Enter case keyword first.');
+      const site = court === 'hc' ? 'site:mhc.tn.gov.in+judgment+' : 'site:sci.gov.in+judgment+';
+      setActivity('Searching ' + court.toUpperCase() + ' Judgements...');
+      window.open('https://www.google.com/search?q=' + encodeURIComponent(site + q), '_blank');
+    }
+
+    async function runGemini(mode) {
+      const apiKey = (localStorage.getItem('kalai_gemini_key') || '').trim();
+      let prompt = '';
+      if (mode === 'judgement') {
+        const q = document.getElementById('caseQuery').value.trim() || draftArea.value.slice(-300);
+        prompt = `Provide relevant High Court & Supreme Court legal principles/judgements for (mark citations to verify officially):\n\n${q}`;
+        setActivity('Fetching Judgements via Gemini API...');
+      } else {
+        const q = document.getElementById('secQuestion').value.trim() || qaBox.value.slice(-300);
+        prompt = `Respond in Tamil or English matching the input language. Identify applicable statutory sections/provisions and relevant judgements if any:\n\n${q}`;
+        setActivity('Analysing Sections & Q&A via Gemini API...');
+      }
+
+      if (!apiKey) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(prompt).catch(() => {});
+        }
+        setActivity('Copied Prompt — Opening Gemini Web');
+        window.open('https://gemini.google.com/app', '_blank');
+        return;
+      }
+
+      const targetBox = mode === 'judgement' ? judgementBox : qaBox;
+      targetBox.value += (targetBox.value ? '\n\n' : '') + '[Querying Gemini API...]';
+
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          }
+        );
+        const data = await res.json();
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || data?.error?.message || 'No response';
+        targetBox.value = targetBox.value.replace('[Querying Gemini API...]', reply);
+        setActivity('Gemini API Response Ready');
+      } catch (err) {
+        targetBox.value = targetBox.value.replace('[Querying Gemini API...]', 'API Error: ' + err.message);
+        setActivity('Gemini API Error');
+      }
+    }
+
+    function downloadDoc() {
+      const title = (document.getElementById('docTitle').value || 'Legal_Document').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+      const blob = new Blob([draftArea.value], { type: 'application/msword' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = title + '.doc';
+      a.click();
+      setActivity('Exported ' + title + '.doc');
+    }
+  </script>
+</body>
+</html>
 
