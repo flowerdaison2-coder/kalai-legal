@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kalai Legal Suite v6 — Canva & Chamber Edition</title>
+  <title>Kalai Legal Suite v10 — All-India Auto Petition Engine</title>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
     body {
@@ -26,7 +26,6 @@
       color: #fff; margin: 12px 0; text-align: center; width: 200px; letter-spacing: 4px;
     }
 
-    /* CANVA-STYLE TOP HEADER */
     header {
       background: linear-gradient(90deg, #1e1b4b 0%, #4338ca 55%, #7e22ce 100%);
       color: #fff; padding: 8px 14px;
@@ -35,9 +34,8 @@
     }
     header h1 { font-size: 14px; margin: 0; letter-spacing: 0.3px; color: #fde68a; }
 
-    /* LIVE STATUS BAR */
     .status-bar {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid rgba(99, 102, 241, 0.25);
       padding: 6px 14px;
@@ -69,7 +67,6 @@
       50% { transform: scale(1.05); }
     }
 
-    /* 80% LEFT + 20% RIGHT */
     .workspace {
       display: grid; grid-template-columns: 4fr 1fr;
       gap: 12px; padding: 10px 12px 12px;
@@ -80,9 +77,8 @@
       gap: 12px; min-height: 0;
     }
 
-    /* CANVA-STYLE CARDS */
     .panel {
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.95);
       border: 1.5px solid rgba(129, 140, 248, 0.3);
       border-radius: 16px; padding: 11px;
       display: flex; flex-direction: column; min-height: 0;
@@ -100,35 +96,29 @@
       border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 10px;
       font-size: 13px; line-height: 1.55; resize: none; min-height: 45px;
     }
-    textarea:focus, input:focus, select:focus {
-      outline: none; border-color: #6366f1;
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
-    }
     input[type="text"], input[type="password"], select {
       width: 100%; padding: 6px 9px; border-radius: 10px;
       border: 1.5px solid #cbd5e1; background: #fff; color: #0f172a;
       font-size: 12px; margin-bottom: 6px;
     }
 
-    /* FUNKY + LAW PROFESSIONAL BUTTONS */
     .btn-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
-    button {
+    button, .file-btn {
       border: none; color: #fff; padding: 6px 11px;
       border-radius: 999px; font-size: 11px; font-weight: 700;
-      cursor: pointer; letter-spacing: 0.2px;
+      cursor: pointer; letter-spacing: 0.2px; display: inline-flex; align-items: center;
       transition: transform 0.14s ease, box-shadow 0.14s ease;
       box-shadow: 0 3px 8px rgba(15, 23, 42, 0.16);
     }
-    button:hover { transform: translateY(-1.5px) rotate(-1deg); box-shadow: 0 5px 12px rgba(15, 23, 42, 0.24); }
-    button:active { transform: scale(0.97); }
+    button:hover, .file-btn:hover { transform: translateY(-1.5px) rotate(-1deg); }
 
     .btn-law { background: linear-gradient(135deg, #1e1b4b, #4338ca); }
     .btn-funky-green { background: linear-gradient(135deg, #059669, #10b981); }
-    .btn-funky-amber { background: linear-gradient(135deg, #b45309, #f59e0b); color: #fff; }
+    .btn-funky-amber { background: linear-gradient(135deg, #b45309, #f59e0b); }
     .btn-funky-pink { background: linear-gradient(135deg, #be185d, #ec4899); }
     .btn-funky-purple { background: linear-gradient(135deg, #6d28d9, #a855f7); }
     .btn-funky-red { background: linear-gradient(135deg, #b91c1c, #ef4444); }
-    .btn-api { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+    .file-btn { background: linear-gradient(135deg, #0f766e, #14b8a6); }
 
     .doc-bar {
       display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
@@ -139,17 +129,12 @@
     .doc-bar select { width: auto; min-width: 145px; margin-bottom: 0; }
     .hint { font-size: 11px; color: #475569; margin-top: 5px; }
 
-    .api-drawer {
-      display: none; background: #fffbeb; border-bottom: 2px solid #f59e0b;
-      padding: 8px 14px;
-    }
-
     @media (max-width: 900px) {
       .workspace { grid-template-columns: 1fr; height: auto; }
       .right-col { grid-template-rows: auto auto; }
     }
     @media print {
-      #lockScreen, header, .status-bar, .api-drawer, .doc-bar, .right-col, .btn-row, .hint, h2 { display: none !important; }
+      #lockScreen, header, .status-bar, .doc-bar, .right-col, .btn-row, .hint, h2 { display: none !important; }
       .workspace { display: block; height: auto; padding: 0; }
       .panel { border: none; box-shadow: none; padding: 0; background: #fff; }
       textarea { border: none; background: #fff; color: #000; font-size: 13pt; }
@@ -159,7 +144,7 @@
 <body>
 
   <div id="lockScreen">
-    <h2 style="color:#fde68a;margin:0;font-size:20px;">Kalai Chambers — Private Access</h2>
+    <h2 style="color:#fde68a;margin:0;font-size:20px;">Kalai Legal Suite v10 — All-India Auto Petition</h2>
     <p style="font-size:13px;color:#e0e7ff;margin:6px 0 0;">Enter PIN (Default: 1234)</p>
     <input type="password" id="pinInput" maxlength="8" placeholder="PIN" />
     <div style="display:flex;gap:8px;">
@@ -170,37 +155,34 @@
   </div>
 
   <header>
-    <h1>Kalai Legal Suite v6 — Voice & Chamber Edition</h1>
+    <h1>Kalai Legal Suite v10 — Single Document -> All-India Auto Petition</h1>
     <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
       <span id="micSignal" class="mic-signal"><span class="dot"></span><span id="micSignalText">MIC OFF</span></span>
-      <button class="btn-api" onclick="toggleApiDrawer()">Gemini API</button>
+      <button class="btn-funky-green" onclick="startVoiceCommander('ta-IN')">Voice AI (TA)</button>
+      <button class="btn-funky-pink" onclick="startVoiceCommander('en-IN')">Voice AI (EN)</button>
+      <button class="btn-funky-red" onclick="stopVoiceCommander()">Stop Voice</button>
       <button class="btn-funky-red" onclick="lockApp()">Lock</button>
     </div>
   </header>
 
-  <!-- LIVE STATUS BAR: CURRENT PAGE + CURRENT ACTIVITY -->
   <div class="status-bar">
     <span id="pageStatusPill" class="status-pill">Page: 1 / 80</span>
-    <span id="activityStatusPill" class="status-pill activity">Status: Ready in Chamber</span>
-  </div>
-
-  <div id="apiDrawer" class="api-drawer">
-    <div style="font-size:12px;font-weight:700;margin-bottom:4px;color:#78350f;">Gemini API Key (Saved locally on this device)</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;">
-      <input type="password" id="geminiApiKeyInput" placeholder="Paste Gemini API Key..." style="flex:1;min-width:180px;margin-bottom:0;" />
-      <button class="btn-funky-green" onclick="saveApiKey()">Save Key</button>
-      <button class="btn-funky-red" onclick="clearApiKey()">Clear</button>
-    </div>
+    <span id="activityStatusPill" class="status-pill activity">Status: Paste/Upload Document or Speak</span>
   </div>
 
   <div class="workspace">
     <!-- SCREEN 1 (80%) -->
     <div class="panel">
-      <h2>1. Petition & Voice Workspace (80%)</h2>
+      <h2>1. Document Input & Auto-Generated Petition + Docket (80%)</h2>
 
       <div class="doc-bar">
-        <input type="text" id="docTitle" placeholder="Case / Document title..." />
-        <button class="btn-funky-green" onclick="saveNewOrUpdateDoc()">Save Doc</button>
+        <input type="text" id="docTitle" placeholder="Auto-detected Court & Petition Title..." />
+        <label class="file-btn">
+          Load Doc
+          <input type="file" id="docFileInput" accept=".txt,.doc,.docx,.md" style="display:none;" onchange="handleFileUpload(event)" />
+        </label>
+        <button class="btn-funky-amber" onclick="autoGenerateFromDocument()">Auto-Create Petition</button>
+        <button class="btn-funky-green" onclick="saveDoc()">Save Doc</button>
         <select id="docLibrarySelect" onchange="loadSelectedDoc()">
           <option value="">-- Saved Docs --</option>
         </select>
@@ -213,16 +195,14 @@
         onclick="updateCurrentPageFromCursor()"
         onkeyup="updateCurrentPageFromCursor()"
         onscroll="updateCurrentPageFromCursor()"
-        placeholder="Speak or type here. Voice command tip: say 'replace oldword with newword' or 'kalai one' for Screen 3..."
+        placeholder="Paste your case document/matter here OR load a document file, then click 'Auto-Create Petition' or say 'petition create pannu' / 'itha sonna enna drawback varum'..."
       ></textarea>
 
-      <div class="hint" id="voiceHint">Voice commands supported in speech: "replace [a] with [b]" | "kalai one" -> Screen 3 mic.</div>
+      <div class="hint" id="voiceHint">Supports All-India Courts & Petition Types from single document input. Always verify statutory sections, court rules & filing requirements officially.</div>
 
       <div class="btn-row">
-        <button class="btn-funky-green" onclick="startDraftMic('en-IN')">Speak (EN)</button>
-        <button class="btn-funky-pink" onclick="startDraftMic('ta-IN')">Speak (TA)</button>
-        <button class="btn-funky-red" onclick="stopDraftMic()">Stop Mic</button>
-        <button class="btn-funky-amber" onclick="insertTemplate()">Petition Format</button>
+        <button class="btn-funky-amber" onclick="autoGenerateFromDocument()">Auto-Create Petition</button>
+        <button class="btn-funky-red" onclick="analyzeVoiceDrawbacks()">Drawback & Risk Voice Check</button>
         <button class="btn-law" onclick="downloadDoc()">Export .DOC</button>
         <button class="btn-funky-purple" onclick="window.print()">Print</button>
       </div>
@@ -232,28 +212,16 @@
     <div class="right-col">
       <!-- SCREEN 2 -->
       <div class="panel">
-        <h2>2. HC & SC Judgements</h2>
-        <input type="text" id="caseQuery" placeholder="Case / judgement search (TA or EN)..." />
-        <div class="btn-row">
-          <button class="btn-law" onclick="googleSearchFrom('caseQuery')">Google</button>
-          <button class="btn-funky-amber" onclick="searchJudgement('hc')">HC</button>
-          <button class="btn-funky-purple" onclick="searchJudgement('sc')">SC</button>
-          <button class="btn-api" onclick="runGemini('judgement')">API Cases</button>
-        </div>
-        <textarea id="judgementBox" onfocus="setActivity('Reviewing Judgements & Citations')" placeholder="Judgements & citations..."></textarea>
+        <h2>2. Detected Court, Petition Type & Provisions</h2>
+        <input type="text" id="caseQuery" placeholder="Detected Court & Petition Type..." />
+        <textarea id="judgementBox" placeholder="Auto-selected Sections, Orders, Rules & Docket summary..."></textarea>
       </div>
 
       <!-- SCREEN 3 -->
       <div class="panel">
-        <h2>3. Kalai One, Sections & Q&A</h2>
-        <input type="text" id="secQuestion" placeholder="Section doubt or any Q (TA/EN)..." />
-        <div class="btn-row">
-          <button class="btn-funky-green" onclick="activateKalaiOne('en-IN')">Kalai One (EN)</button>
-          <button class="btn-funky-pink" onclick="activateKalaiOne('ta-IN')">Kalai One (TA)</button>
-          <button class="btn-law" onclick="googleSearchFrom('secQuestion')">Google</button>
-          <button class="btn-api" onclick="runGemini('section')">Ask API</button>
-        </div>
-        <textarea id="qaBox" onfocus="setActivity('Analysing Sections & Q&A')" placeholder="Section analysis & general Q&A..."></textarea>
+        <h2>3. Voice AI Risk & Strategy Advisor</h2>
+        <input type="text" id="secQuestion" placeholder="Last voice command / risk query..." />
+        <textarea id="qaBox" placeholder="Drawback & adverse-fact analysis (spoken in Tamil)..."></textarea>
       </div>
     </div>
   </div>
@@ -261,19 +229,50 @@
   <script>
     const MAX_PAGES = 80;
     const WORDS_PER_PAGE = 300;
+    let commanderRec = null;
+
+    const draftArea = document.getElementById('draftArea');
+    const judgementBox = document.getElementById('judgementBox');
+    const qaBox = document.getElementById('qaBox');
+
+    function speakTamil(text) {
+      if (!('speechSynthesis' in window) || !text) return;
+      try {
+        window.speechSynthesis.cancel();
+        const clean = text.replace(/[*#_`>-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 950);
+        const u = new SpeechSynthesisUtterance(clean);
+        u.lang = 'ta-IN';
+        const voices = window.speechSynthesis.getVoices();
+        const ta = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ta'));
+        if (ta) u.voice = ta;
+        window.speechSynthesis.speak(u);
+      } catch {}
+    }
+
+    function setActivity(msg) {
+      document.getElementById('activityStatusPill').innerText = 'Status: ' + msg;
+    }
+
+    function setMicSignal(on, label) {
+      const b = document.getElementById('micSignal');
+      const t = document.getElementById('micSignalText');
+      if (on) { b.classList.add('active'); t.innerText = label || 'VOICE AI ON'; }
+      else { b.classList.remove('active'); t.innerText = 'MIC OFF'; }
+    }
 
     function getStoredPin() { return localStorage.getItem('kalai_pin') || '1234'; }
     function unlockApp() {
       if (document.getElementById('pinInput').value.trim() === getStoredPin()) {
         document.getElementById('lockScreen').style.display = 'none';
         document.getElementById('pinInput').value = '';
-        setActivity('Unlocked — Ready for Drafting');
+        setActivity('Assistant: Enna panna poringa?');
+        speakTamil('வணக்கம்! என்ன பண்ண போறீங்க? டாக்குமெண்ட் கொடுத்தால் அனைத்து இந்திய நீதிமன்றங்களுக்கும் ஏற்ற பெட்டிஷன் உருவாக்கப்படும்.');
       } else {
         document.getElementById('pinMsg').innerText = 'Wrong PIN!';
       }
     }
     function lockApp() {
-      setActivity('Chamber Locked');
+      if ('speechSynthesis' in window) try { window.speechSynthesis.cancel(); } catch {}
       document.getElementById('lockScreen').style.display = 'flex';
     }
     function changePin() {
@@ -284,44 +283,6 @@
       }
     }
 
-    function toggleApiDrawer() {
-      const d = document.getElementById('apiDrawer');
-      const open = d.style.display === 'block';
-      d.style.display = open ? 'none' : 'block';
-      document.getElementById('geminiApiKeyInput').value = localStorage.getItem('kalai_gemini_key') || '';
-      setActivity(open ? 'API Settings Closed' : 'Configuring Gemini API Key');
-    }
-    function saveApiKey() {
-      localStorage.setItem('kalai_gemini_key', document.getElementById('geminiApiKeyInput').value.trim());
-      setActivity('Gemini API Key Saved');
-      alert('Gemini API Key saved locally.');
-    }
-    function clearApiKey() {
-      localStorage.removeItem('kalai_gemini_key');
-      document.getElementById('geminiApiKeyInput').value = '';
-      setActivity('Gemini API Key Cleared');
-    }
-
-    function setActivity(msg) {
-      document.getElementById('activityStatusPill').innerText = 'Status: ' + msg;
-    }
-
-    function setMicSignal(isOn, label) {
-      const badge = document.getElementById('micSignal');
-      const txt = document.getElementById('micSignalText');
-      if (isOn) {
-        badge.classList.add('active');
-        txt.innerText = label || 'MIC ON';
-      } else {
-        badge.classList.remove('active');
-        txt.innerText = 'MIC OFF';
-      }
-    }
-
-    const draftArea = document.getElementById('draftArea');
-    const judgementBox = document.getElementById('judgementBox');
-    const qaBox = document.getElementById('qaBox');
-
     function estimateTotalPages(text) {
       const words = text.trim() ? text.trim().split(/\s+/).length : 0;
       return Math.max(1, Math.ceil(words / WORDS_PER_PAGE));
@@ -330,18 +291,255 @@
     function updateCurrentPageFromCursor() {
       const totalPages = estimateTotalPages(draftArea.value);
       const pos = typeof draftArea.selectionStart === 'number' ? draftArea.selectionStart : draftArea.value.length;
-      const beforeText = draftArea.value.slice(0, pos);
-      const wordsBefore = beforeText.trim() ? beforeText.trim().split(/\s+/).length : 0;
-      const currentPage = Math.min(MAX_PAGES, Math.max(1, Math.ceil(wordsBefore / WORDS_PER_PAGE) || 1));
-      const pill = document.getElementById('pageStatusPill');
-      pill.innerText = 'Page: ' + currentPage + ' of ' + totalPages + ' (Max ' + MAX_PAGES + ')';
-      pill.style.color = totalPages > MAX_PAGES ? '#b91c1c' : '#3730a3';
+      const wordsBefore = draftArea.value.slice(0, pos).trim().split(/\s+/).filter(Boolean).length;
+      const curPage = Math.min(MAX_PAGES, Math.max(1, Math.ceil(wordsBefore / WORDS_PER_PAGE) || 1));
+      document.getElementById('pageStatusPill').innerText = 'Page: ' + curPage + ' of ' + totalPages + ' (Max ' + MAX_PAGES + ')';
     }
 
     function onDraftChange() {
       updateCurrentPageFromCursor();
-      setActivity('Drafting Petition...');
       localStorage.setItem('kalai_autosave_draft', draftArea.value);
+    }
+
+    function handleFileUpload(ev) {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const raw = String(e.target.result || '');
+        const cleaned = raw.replace(/[^\x09\x0A\x0D\x20-\x7E\u0B80-\u0BFF]/g, ' ').replace(/\s{3,}/g, '\n\n').trim();
+        draftArea.value = cleaned || ('Loaded file: ' + file.name);
+        if (!document.getElementById('docTitle').value.trim()) {
+          document.getElementById('docTitle').value = file.name.replace(/\.[^.]+$/, '');
+        }
+        onDraftChange();
+        autoGenerateFromDocument();
+      };
+      reader.readAsText(file);
+    }
+
+    function classifyAllIndiaCourtAndPetition(text) {
+      const t = text.toLowerCase();
+
+      let court = 'SUBORDINATE / CIVIL COURT (ALL-INDIA CIVIL JURISDICTION)';
+      let courtHeading = "IN THE COURT OF THE CIVIL / SUBORDINATE JUDGE";
+      let petitionType = 'Civil Petition / Suit / Interlocutory Application';
+      let provisions = `Suggested Civil Provisions (Verify Official Bare Act):
+- CPC Sec. 9 (Jurisdiction), Sec. 15–20 (Competent Court & Place of Suing)
+- CPC Sec. 26 & Order IV Rule 1 (Institution), Order VII Rule 1 (Plaint/Petition)
+- CPC Order XXXIX Rules 1–2 (Temporary Injunction, if applicable)`;
+
+      if (/supreme\s*court|slp|special\s*leave|article\s*32/i.test(t)) {
+        court = 'SUPREME COURT OF INDIA';
+        courtHeading = "IN THE SUPREME COURT OF INDIA\n(CIVIL / CRIMINAL APPELLATE / WRIT JURISDICTION)";
+        petitionType = /article\s*32|writ/i.test(t) ? 'Writ Petition under Art. 32' : 'Special Leave Petition (SLP)';
+        provisions = `Suggested Constitutional / Supreme Court Provisions (Verify):
+- Constitution of India: Art. 136 (SLP) / Art. 32 (Writ)
+- Supreme Court Rules & Practice Directions (Verify latest rules)`;
+      } else if (/high\s*court|writ|article\s*226|quash|482|528/i.test(t)) {
+        const hcMatch = text.match(/high\s*court\s*(?:of\s*judicature\s*at\s*)?([a-zA-Z\s]+?)(?:,|\n|\.)/i);
+        const hcName = hcMatch ? hcMatch[1].trim().toUpperCase() : 'MADRAS / RELEVANT HIGH COURT';
+        court = 'HIGH COURT OF ' + hcName;
+        courtHeading = "IN THE HIGH COURT OF JUDICATURE AT " + hcName;
+        if (/quash|482|528|fir|charge\s*sheet/i.test(t)) {
+          petitionType = 'Criminal Quash / Inherent Jurisdiction Petition';
+          provisions = `Suggested Criminal Quash Provisions (Verify):
+- BNSS Sec. 528 / CrPC Sec. 482 (Inherent powers) & BNS / IPC relevant sections`;
+        } else {
+          petitionType = 'Writ Petition under Article 226';
+          provisions = `Suggested Writ Provisions (Verify):
+- Constitution of India: Art. 226 & High Court Writ Rules`;
+        }
+      } else if (/bail|anticipatory|remand|police|fir|accused|magistrate|sessions|criminal/i.test(t)) {
+        court = /sessions|anticipatory/i.test(t) ? 'COURT OF SESSION / CRIMINAL COURT' : 'JUDICIAL MAGISTRATE / CRIMINAL COURT';
+        courtHeading = "IN THE COURT OF THE " + court;
+        petitionType = /anticipatory|pre-arrest/i.test(t) ? 'Anticipatory Bail Petition' : (/bail/i.test(t) ? 'Bail Application' : 'Criminal Petition / Application');
+        provisions = `Suggested Criminal Procedure Provisions (Verify):
+- BNSS / CrPC Bail & Criminal Procedure provisions + BNS / IPC relevant sections`;
+      } else if (/divorce|custody|maintenance|family\s*court|matrimonial|husband|wife/i.test(t)) {
+        court = 'FAMILY COURT';
+        courtHeading = "IN THE FAMILY COURT";
+        petitionType = /maintenance/i.test(t) ? 'Maintenance Petition' : (/custody/i.test(t) ? 'Child Custody / Guardianship Petition' : 'Matrimonial / Family Petition');
+        provisions = `Suggested Family / Personal Law Provisions (Verify):
+- Family Courts Act, 1984 + applicable Personal Law / Maintenance provisions`;
+      } else if (/consumer|deficiency|service|forum|commission/i.test(t)) {
+        court = 'CONSUMER DISPUTES REDRESSAL COMMISSION';
+        courtHeading = "BEFORE THE DISTRICT / STATE CONSUMER DISPUTES REDRESSAL COMMISSION";
+        petitionType = 'Consumer Complaint';
+        provisions = `Suggested Consumer Law Provisions (Verify):
+- Consumer Protection Act, 2019 (Relevant complaint & jurisdiction sections)`;
+      } else if (/madurai/i.test(t) && /sub/i.test(t)) {
+        court = 'SUBORDINATE COURT, MADURAI';
+        courtHeading = "IN THE COURT OF THE SUBORDINATE JUDGE, MADURAI";
+        petitionType = 'Civil Dispute Petition / Suit / I.A.';
+      }
+
+      return { court, courtHeading, petitionType, provisions };
+    }
+
+    function autoGenerateFromDocument() {
+      const sourceDoc = draftArea.value.trim();
+      if (!sourceDoc) {
+        const msg = 'முதலில் டாக்குமெண்ட் விவரத்தை பேஸ்ட் செய்யவும் அல்லது ஃபைல் லோட் செய்யவும்.';
+        qaBox.value = msg + (qaBox.value ? '\n\n' + qaBox.value : '');
+        speakTamil(msg);
+        return;
+      }
+
+      const info = classifyAllIndiaCourtAndPetition(sourceDoc);
+      document.getElementById('docTitle').value = info.petitionType + ' - ' + info.court;
+      document.getElementById('caseQuery').value = info.court + ' | ' + info.petitionType;
+
+      const summaryFacts = sourceDoc.slice(0, 1400);
+
+      draftArea.value = `==================== DOCKET SHEET ====================
+COURT          : ${info.court}
+PETITION TYPE  : ${info.petitionType}
+PARTIES        : Petitioner / Applicant / Plaintiff  Vs.  Respondent / Opposite Party
+PROVISIONS     : Auto-Selected Sections / Orders / Rules (Verify Officially)
+========================================================
+
+${info.courtHeading}
+
+Case / Petition No. _____ of 2026
+
+Between:
+1. ___________________________ (Petitioner / Plaintiff / Applicant)
+-Vs-
+1. ___________________________ (Respondent / Defendant / Opposite Party)
+
+PETITION / APPLICATION DRAFT:
+
+1. JURISDICTION & MAINTAINABILITY:
+This Hon'ble Court has jurisdiction to entertain and adjudicate upon this ${info.petitionType}.
+
+2. FACTS AS PER DOCUMENT SUBMITTED:
+${summaryFacts}
+
+3. GROUNDS & LEGAL SUBMISSIONS:
+(a) The action is bonafide, timely, and supported by the document/material placed on record.
+(b) Grave prejudice would be caused to the Petitioner if relief is not granted.
+
+4. PRAYER:
+Wherefore, it is prayed that this Hon'ble Court may be pleased to grant appropriate relief as sought in the ${info.petitionType} and pass such further or other orders as this Hon'ble Court may deem fit and proper.
+
+Counsel for Petitioner
+(Verify local court format, court fee, limitation & bare act provisions before filing)`;
+
+      judgementBox.value = `COURT: ${info.court}\nPETITION TYPE: ${info.petitionType}\n\n${info.provisions}`;
+      onDraftChange();
+      setActivity('Auto-Generated: ' + info.petitionType + ' (' + info.court + ')');
+      speakTamil('கொடுக்கப்பட்ட டாக்குமெண்ட்டின் அடிப்படையில் ' + info.court + ' நீதிமன்றத்திற்கான ' + info.petitionType + ' டாக்கெட் மற்றும் டிராஃப்ட் தயார் செய்யப்பட்டுள்ளது. சம்பந்தப்பட்ட செக்ஷன்ஸ் மற்றும் கோர்ட் விதிகளை சரிபார்த்து உறுதி செய்யவும்.');
+    }
+
+    function analyzeVoiceDrawbacks() {
+      const combined = (document.getElementById('secQuestion').value + ' ' + draftArea.value).toLowerCase();
+      const risks = [];
+
+      if (/admission|ஒப்புதல்|ஏற்றுக் கொண்டேன்|சம்மதி|தவறு|mistake/i.test(combined)) {
+        risks.push('எதிர் தரப்புக்கு சாதகமாகவோ அல்லது நம் தரப்புக்கு பாதகமாகவோ ஏதேனும் ஒப்புதல் (admission) வந்தால், அது வழக்கு/பெட்டிஷனில் பின்னடைவாக மாறலாம்.');
+      }
+      if (/date|தேதி|limitation|காலம்|வருடம்|முன்பு|பழைய/i.test(combined)) {
+        risks.push('காலவரையறை (Limitation) மற்றும் தேதி விவரங்களில் முரண்பாடு இருந்தால் மனு நிராகரிக்கப்படும் அல்லது தாமதமாகும் அபாயம் உள்ளது.');
+      }
+      if (/document|ஆவணம்|பத்திரம்|proof|சாட்சி|சொல்றேன்|வாய்மொழி/i.test(combined)) {
+        risks.push('ஆவண ஆதாரம் (documentary proof) இல்லாத கூற்றுகளை உறுதியாக முன்வைத்தால், கோர்ட்டில் நிரூபிப்பதில் சிக்கல் வரலாம்.');
+      }
+      if (risks.length === 0) {
+        risks.push('ஒரு விஷயத்தை பெட்டிஷனில் கூறும்போது, அது நம் தரப்பு வாதத்திற்கு பாதகமாக மாறுமா (adverse inference), முரண்பாடாக இருக்குமா, அல்லது தேவையற்ற சட்ட சிக்கலை ஏற்படுத்துமா என்பதை கவனிக்க வேண்டும்.');
+      }
+
+      const reply =
+        'இந்த விஷயத்தை சொன்னால் வரக்கூடிய சாத்தியமான பாதிப்புகள் (Drawbacks): ' +
+        risks.join(' ') +
+        ' (இறுதி முடிவு அபிஷியல் சட்ட நூல்கள் மற்றும் வழக்கறிஞர் ஆலோசனைப்படி இருக்க வேண்டும்.)';
+
+      qaBox.value = reply + (qaBox.value ? '\n\n' + qaBox.value : '');
+      setActivity('Voice Drawback Analysis Spoken');
+      speakTamil(reply);
+    }
+
+    function processAiVoiceCommand(spoken) {
+      const low = spoken.toLowerCase().trim();
+      document.getElementById('secQuestion').value = spoken;
+      setActivity('Voice Command: "' + spoken + '"');
+
+      if (/drawback|பாதிப்பு|பாதகம்|சொல்ல கூடாது|சொல்லக்கூடாது|risk|பிரச்சனை/i.test(spoken)) {
+        analyzeVoiceDrawbacks();
+        return;
+      }
+
+      if (/petition|பெட்டிஷன்|create|உருவாக்கு|draft|டிராஃப்ட்/i.test(low)) {
+        autoGenerateFromDocument();
+        return;
+      }
+
+      if (/save|சேவ்|பத்திரப்படுத்து/i.test(low)) {
+        saveDoc();
+        return;
+      }
+
+      if (/export|doc|டவுன்லோட்/i.test(low)) {
+        downloadDoc();
+        return;
+      }
+
+      if (/print|பிரிண்ட்/i.test(low)) {
+        window.print();
+        return;
+      }
+
+      draftArea.value += (draftArea.value ? '\n' : '') + spoken;
+      onDraftChange();
+      speakTamil('டாக்குமெண்ட்டில் சேர்க்கப்பட்டது.');
+    }
+
+    function startVoiceCommander(lang) {
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) {
+        setActivity('Browser Speech API Unavailable — Use HTTPS or Gboard Mic');
+        return;
+      }
+      if (commanderRec) { try { commanderRec.stop(); } catch {} }
+      commanderRec = new SR();
+      commanderRec.lang = lang || 'ta-IN';
+      commanderRec.continuous = true;
+      commanderRec.interimResults = false;
+
+      commanderRec.onstart = () => {
+        setMicSignal(true, 'VOICE AI ON');
+        setActivity('Listening to Your Voice Commands...');
+      };
+      commanderRec.onresult = (e) => {
+        const transcript = e.results[e.results.length - 1][0].transcript;
+        processAiVoiceCommand(transcript);
+      };
+      commanderRec.onerror = (e) => {
+        setMicSignal(false);
+        setActivity('Mic Error: ' + e.error + ' (Use HTTPS link & Allow Mic)');
+      };
+      commanderRec.onend = () => {
+        setMicSignal(false);
+        setActivity('Voice AI Mic Stopped');
+      };
+      commanderRec.start();
+    }
+
+    function stopVoiceCommander() {
+      if (commanderRec) { try { commanderRec.stop(); } catch {} }
+      setMicSignal(false);
+      setActivity('Voice AI Stopped');
+    }
+
+    function saveDoc() {
+      const title = (document.getElementById('docTitle').value || '').trim() || ('AllIndia_Petition_' + new Date().toLocaleDateString());
+      const docs = getDocs();
+      const idx = docs.findIndex(d => d.title.toLowerCase() === title.toLowerCase());
+      const rec = { title, pages: estimateTotalPages(draftArea.value), draft: draftArea.value, judgements: judgementBox.value, qa: qaBox.value };
+      if (idx >= 0) docs[idx] = rec; else docs.push(rec);
+      setDocs(docs);
+      setActivity('Saved "' + title + '"');
+      speakTamil(title + ' சேவ் செய்யப்பட்டது.');
     }
 
     function getDocs() {
@@ -356,25 +554,12 @@
       const sel = document.getElementById('docLibrarySelect');
       const docs = getDocs();
       sel.innerHTML = '<option value="">-- Saved Docs (' + docs.length + ') --</option>';
-      docs.forEach((d, idx) => {
-        const opt = document.createElement('option');
-        opt.value = idx;
-        opt.textContent = d.title + ' (' + d.pages + 'p)';
-        sel.appendChild(opt);
+      docs.forEach((d, i) => {
+        const o = document.createElement('option');
+        o.value = i;
+        o.textContent = d.title + ' (' + d.pages + 'p)';
+        sel.appendChild(o);
       });
-    }
-    function saveNewOrUpdateDoc() {
-      const title = (document.getElementById('docTitle').value || '').trim() || ('Case_' + new Date().toLocaleDateString());
-      const pages = estimateTotalPages(draftArea.value);
-      if (pages > MAX_PAGES) return alert('Max 80 pages per document. Current: ' + pages);
-      const docs = getDocs();
-      const idx = docs.findIndex(d => d.title.toLowerCase() === title.toLowerCase());
-      const rec = { title, pages, draft: draftArea.value, judgements: judgementBox.value, qa: qaBox.value };
-      if (idx >= 0) docs[idx] = rec;
-      else docs.push(rec);
-      setDocs(docs);
-      setActivity('Saved "' + title + '" Permanently');
-      alert('Saved: ' + title);
     }
     function loadSelectedDoc() {
       const idx = document.getElementById('docLibrarySelect').value;
@@ -386,187 +571,22 @@
       judgementBox.value = d.judgements || '';
       qaBox.value = d.qa || '';
       updateCurrentPageFromCursor();
-      setActivity('Opened "' + d.title + '"');
     }
     function deleteSelectedDoc() {
       const sel = document.getElementById('docLibrarySelect');
       const idx = sel.value;
-      if (idx === '') return alert('Select a document first.');
+      if (idx === '') return;
       const docs = getDocs();
       const target = docs[Number(idx)];
-      if (!target) return;
-      if (confirm('Delete "' + target.title + '" permanently?')) {
+      if (target && confirm('Delete "' + target.title + '"?')) {
         docs.splice(Number(idx), 1);
         setDocs(docs);
         sel.value = '';
-        setActivity('Deleted "' + target.title + '"');
-      }
-    }
-
-    window.onload = () => {
-      refreshDocDropdown();
-      draftArea.value = localStorage.getItem('kalai_autosave_draft') || '';
-      updateCurrentPageFromCursor();
-    };
-
-    let draftRec, screen3Rec;
-
-    function applyVoiceReplaceIfAny(transcript) {
-      const match = transcript.match(/replace\s+(.+?)\s+with\s+(.+)/i);
-      if (!match) return false;
-      const findW = match[1].trim();
-      const repW = match[2].trim();
-      if (!findW) return false;
-      const parts = draftArea.value.split(findW);
-      if (parts.length > 1) {
-        draftArea.value = parts.join(repW);
-        onDraftChange();
-        setActivity('Voice Replaced "' + findW + '" -> "' + repW + '"');
-        document.getElementById('voiceHint').innerText = 'Replaced "' + findW + '" with "' + repW + '" (' + (parts.length - 1) + 'x).';
-      } else {
-        setActivity('Word "' + findW + '" Not Found for Voice Replace');
-      }
-      return true;
-    }
-
-    function startDraftMic(lang) {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) {
-        setActivity('Use Gboard Mic (Browser Mic Unavailable)');
-        return;
-      }
-      if (draftRec) { try { draftRec.stop(); } catch {} }
-      draftRec = new SR();
-      draftRec.lang = lang;
-      draftRec.continuous = true;
-      draftRec.interimResults = false;
-      draftRec.onstart = () => {
-        setMicSignal(true, 'MIC 1 ON (' + lang + ')');
-        setActivity('Dictating Draft (' + lang + ')...');
-      };
-      draftRec.onresult = (e) => {
-        const t = e.results[e.results.length - 1][0].transcript;
-        if (/kalai\s*one/i.test(t)) {
-          activateKalaiOne(lang);
-          return;
-        }
-        if (applyVoiceReplaceIfAny(t)) return;
-        draftArea.value += (draftArea.value ? ' ' : '') + t;
-        onDraftChange();
-      };
-      draftRec.onerror = (e) => {
-        setMicSignal(false);
-        setActivity('Mic Error: ' + e.error + ' (Use HTTPS or Gboard Mic)');
-      };
-      draftRec.onend = () => {
-        setMicSignal(false);
-        setActivity('Draft Mic Stopped');
-      };
-      draftRec.start();
-    }
-
-    function stopDraftMic() {
-      if (draftRec) { try { draftRec.stop(); } catch {} }
-      setMicSignal(false);
-      setActivity('Mic Stopped');
-    }
-
-    function activateKalaiOne(lang) {
-      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SR) {
-        setActivity('Kalai One: Use Gboard Mic in Screen 3');
-        return;
-      }
-      if (screen3Rec) { try { screen3Rec.stop(); } catch {} }
-      screen3Rec = new SR();
-      screen3Rec.lang = lang;
-      screen3Rec.continuous = false;
-      screen3Rec.interimResults = false;
-      setMicSignal(true, 'KALAI ONE ON');
-      setActivity('Kalai One Listening (' + lang + ')...');
-      screen3Rec.onresult = (e) => {
-        const spoken = e.results[0][0].transcript;
-        document.getElementById('secQuestion').value = spoken;
-        setMicSignal(false);
-        setActivity('Kalai One Heard: "' + spoken + '"');
-        runGemini('section');
-      };
-      screen3Rec.onerror = (e) => {
-        setMicSignal(false);
-        setActivity('Kalai One Error: ' + e.error);
-      };
-      screen3Rec.onend = () => { setMicSignal(false); };
-      screen3Rec.start();
-    }
-
-    function insertTemplate() {
-      const tpl = `IN THE HON'BLE HIGH COURT OF JUDICATURE AT MADRAS\n\nCase No. _____ of 2026\n\nPetitioner:\n-Vs-\nRespondent:\n\nFACTS:\n\nGROUNDS:\n\nPRAYER:\n\nCounsel for Petitioner`;
-      draftArea.value = tpl + '\n\n' + draftArea.value;
-      onDraftChange();
-      setActivity('Inserted Madras HC Petition Format');
-    }
-
-    function googleSearchFrom(inputId) {
-      const q = document.getElementById(inputId).value.trim();
-      if (!q) return alert('Enter query first.');
-      setActivity('Searching Google: "' + q + '"');
-      window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank');
-    }
-
-    function searchJudgement(court) {
-      const q = document.getElementById('caseQuery').value.trim();
-      if (!q) return alert('Enter case keyword first.');
-      const site = court === 'hc' ? 'site:mhc.tn.gov.in+judgment+' : 'site:sci.gov.in+judgment+';
-      setActivity('Searching ' + court.toUpperCase() + ' Judgements...');
-      window.open('https://www.google.com/search?q=' + encodeURIComponent(site + q), '_blank');
-    }
-
-    async function runGemini(mode) {
-      const apiKey = (localStorage.getItem('kalai_gemini_key') || '').trim();
-      let prompt = '';
-      if (mode === 'judgement') {
-        const q = document.getElementById('caseQuery').value.trim() || draftArea.value.slice(-300);
-        prompt = `Provide relevant High Court & Supreme Court legal principles/judgements for (mark citations to verify officially):\n\n${q}`;
-        setActivity('Fetching Judgements via Gemini API...');
-      } else {
-        const q = document.getElementById('secQuestion').value.trim() || qaBox.value.slice(-300);
-        prompt = `Respond in Tamil or English matching the input language. Identify applicable statutory sections/provisions and relevant judgements if any:\n\n${q}`;
-        setActivity('Analysing Sections & Q&A via Gemini API...');
-      }
-
-      if (!apiKey) {
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(prompt).catch(() => {});
-        }
-        setActivity('Copied Prompt — Opening Gemini Web');
-        window.open('https://gemini.google.com/app', '_blank');
-        return;
-      }
-
-      const targetBox = mode === 'judgement' ? judgementBox : qaBox;
-      targetBox.value += (targetBox.value ? '\n\n' : '') + '[Querying Gemini API...]';
-
-      try {
-        const res = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-          }
-        );
-        const data = await res.json();
-        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || data?.error?.message || 'No response';
-        targetBox.value = targetBox.value.replace('[Querying Gemini API...]', reply);
-        setActivity('Gemini API Response Ready');
-      } catch (err) {
-        targetBox.value = targetBox.value.replace('[Querying Gemini API...]', 'API Error: ' + err.message);
-        setActivity('Gemini API Error');
       }
     }
 
     function downloadDoc() {
-      const title = (document.getElementById('docTitle').value || 'Legal_Document').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+      const title = (document.getElementById('docTitle').value || 'Kalai_AllIndia_Petition').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
       const blob = new Blob([draftArea.value], { type: 'application/msword' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
@@ -574,7 +594,13 @@
       a.click();
       setActivity('Exported ' + title + '.doc');
     }
+
+    window.onload = () => {
+      refreshDocDropdown();
+      draftArea.value = localStorage.getItem('kalai_autosave_draft') || '';
+      updateCurrentPageFromCursor();
+      if ('speechSynthesis' in window) window.speechSynthesis.getVoices();
+    };
   </script>
 </body>
 </html>
-
